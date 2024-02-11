@@ -127,7 +127,7 @@ def rudolf():
             # 그 위치에 루돌프 위치시킨 후 산타가 얻는 점수를 계산해주기
             board[rr][rc] = 0
             rr, rc = nrr, nrc
-            board[rr][rc] = 9
+            board[rr][rc] = -1
             total_santa[santa_num] += c
 
             # 루돌프의 이동방향을 파악한 후, 충돌함수로 넘겨주기
@@ -145,7 +145,7 @@ def rudolf():
         # 그냥 루돌프 이동시켜주고 루돌프 좌표 갱신
         board[rr][rc] = 0
         rr, rc = min_y, min_x
-        board[rr][rc] = 9
+        board[rr][rc] = -1
 
 # 산타 이동 함수
 def santa():
@@ -186,7 +186,7 @@ def santa():
                     # 다음 위치가 루돌프인 경우 = 충돌
                     # 원래 산타가 있던 위치 빈칸으로 만들어주고
                     # 산타 점수 처리해주고 산타이동방향을 충돌함수로 전달한다.
-                    elif board[ny][nx] == 9:
+                    elif board[ny][nx] == -1:
                         board[y][x] = 0
                         dy, dx = santa_dir[j]
                         total_santa[i] += d
@@ -210,10 +210,10 @@ if __name__=='__main__':
     rudolf_dir = [(-1,0),(-1,1),(0,1),(1,1),(1,0),(1,-1),(0,-1),(-1,-1)]    # 루돌프 이동방향
     santa_dir = [(-1,0),(0,1),(1,0),(0,-1)]                                 # 산타 이동 방향
 
-    # 루돌프 초기위치 루돌프는 9로 표시
+    # 루돌프 초기위치 루돌프는 -1로 표시
     rr, rc = map(int,input().split())
     rr, rc = rr-1, rc -1
-    board[rr][rc] = 9
+    board[rr][rc] = -1
 
     # 산타수만큼 맵에 표시, 생존한 산타 번호에 맞게 위치 넣어주기
     for i in range(1,p+1):
@@ -222,6 +222,7 @@ if __name__=='__main__':
         surv_santa[a] = (sr-1,sc-1)
 
     for turn in range(m):
+        sflag = False
         # print('--------------%d턴---------------' % turn)
 
         # 루돌프 이동
@@ -236,10 +237,15 @@ if __name__=='__main__':
         # for x in board:
         #     print(x)
 
-        # 한턴 끝나면 생존한 산타들 점수 1씩 올려주시
+        # 한턴 끝나면 생존한 산타들 점수 1씩 올려주기
+        # 생존한 산타하나라도 있으면 sflag 변경
         for s in range(1,p+1):
             if surv_santa[s] :
                 total_santa[s] += 1
+                sflag = True
+
+        if not sflag:
+            break
 
     # 정답 출력
     for i in range(1,p+1):
