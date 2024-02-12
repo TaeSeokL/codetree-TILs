@@ -96,7 +96,7 @@ def rudolf():
     for i in range(1,p+1):
         # 탈락한 산타라면 continue, 여기서 temp에 아무 튜플을 추가하는 이유는 105~107라인에서 정렬시 int가 들어가 있음 에러가 뜨기 때문.
         if not surv_santa[i]:
-            temp[i-1] = (50,50,50,i)
+            temp[i-1] = (100000,100000,100000,i)
             continue
 
         # 생존 산타 좌표 받아와서 루돌프와 거리 계산 후 배열에 추가해놓기
@@ -113,7 +113,7 @@ def rudolf():
     min_santa_y, min_santa_x, _, santa_num = temp[0]
 
     # 루돌프가 이동 후에 거리가 최소가 될때의 좌표, 그 거리를 저장하는 변수
-    min_y, min_x, min_distance = 0,0,100
+    min_y, min_x, min_distance = 0,0,1000000000
 
     # 루돌프 8방향으로 이동하면서 픽한 산타와의 거리를 계산하면서 거리가 젤 최소가 되는 방향으로 이동하는 반복문
     # 이동 중에 산타를 만나면 산타를 밀쳐냄. 산타를 안만나면 자리만 이동
@@ -143,9 +143,10 @@ def rudolf():
     else:
         # for문이 브레이크 안되고 여기까지 넘어오면 충돌 안한것
         # 그냥 루돌프 이동시켜주고 루돌프 좌표 갱신
-        board[rr][rc] = 0
-        rr, rc = min_y, min_x
-        board[rr][rc] = -1
+        if 0 <= min_y < n and 0 <= min_x < n:
+            board[rr][rc] = 0
+            rr, rc = min_y, min_x
+            board[rr][rc] = -1
 
 # 산타 이동 함수
 def santa():
@@ -161,9 +162,9 @@ def santa():
         if turn in shock_santa[i] or not surv_santa[i] :
             continue
         else:
-            y, x = surv_santa[i]                        # 산타 좌표
-            min_y, min_x, min_distance = 0,0,100        # 루돌프와의 최소거리, 그때의 산타 위치를 저장하기 위한 변수
-            before_distance = (y-rr)**2 + (x-rc)**2     # 이동전 산타-루돌프 거리를 저장해놓음.
+            y, x = surv_santa[i]                              # 산타 좌표
+            min_y, min_x, min_distance = 0,0,1000000000       # 루돌프와의 최소거리, 그때의 산타 위치를 저장하기 위한 변수
+            before_distance = (y-rr)**2 + (x-rc)**2           # 이동전 산타-루돌프 거리를 저장해놓음.
 
             # 네 방향으로 돌아줌.
             for j in range(4):
@@ -178,8 +179,8 @@ def santa():
                         # min_y, min_x, min_distance를 구해줌.
                         after_distance = (ny-rr)**2 + (nx-rc)**2
                         if after_distance < before_distance:
-                            flag = True
                             if after_distance < min_distance:
+                                flag = True
                                 min_distance = after_distance
                                 min_y, min_x = ny, nx
 
@@ -228,15 +229,20 @@ if __name__=='__main__':
         # 루돌프 이동
         rudolf()
         # print('-----------루돌프이동-------------')
-        # for x in board:
-        #     print(x)
+        # for i in range(n):
+        #     for j in range(n):
+        #         print('%3d'%board[i][j], end='')
+        #     print()
 
         # 산타 이동
         santa()
         # print('-----------산타 이동-------------')
-        # for x in board:
-        #     print(x)
-
+        # for i in range(n):
+        #     for j in range(n):
+        #         print('%3d'%board[i][j], end='')
+        #     print()
+        #
+        # print()
         # 한턴 끝나면 생존한 산타들 점수 1씩 올려주기
         # 생존한 산타하나라도 있으면 sflag 변경
         for s in range(1,p+1):
