@@ -68,6 +68,11 @@ def horse_move_and_fight(num,d):
                 horse_hp[demage_horse[i]] -= 1
 
 
+    for i in range(1, len(horse_hp)):
+        if horse_hp[i] == 0:
+            for (y,x) in horse_index[i]:
+                horse_board[y][x] = 0
+
 
 
 if __name__=='__main__':
@@ -115,7 +120,7 @@ if __name__=='__main__':
 
 
     ans = 0
-    for i in range(len(horse_hp)):
+    for i in range(1, len(horse_hp)):
         if horse_hp[i] > 0:
             ans += horse_ori_hp[i] - horse_hp[i]
     print(ans)
