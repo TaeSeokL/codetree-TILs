@@ -105,6 +105,9 @@ if __name__=='__main__':
         # 기사의 번호와 이동방향
         horse_num, d = map(int,input().split())
 
+        if horse_hp[horse_num] == 0:
+            continue
+
         # 기사 이동
         horse_move_and_fight(horse_num,d)
 
