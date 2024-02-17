@@ -20,7 +20,8 @@ def horse_move_and_fight(num,d):
             elif horse_board[ny][nx] != num and horse_board[ny][nx] != 0 :
                 if horse_board[ny][nx] not in moving_horse:
                     moving_horse.append(horse_board[ny][nx])
-
+        else:
+            return
     # 전에 단계에서 기사들을 추가했으면 이 기사들을 대상으로도 똑같은 것을 진행함.
     # 움직여야하는 모든 기사들을 tmp에 추가해줌.
     while moving_horse:
@@ -38,6 +39,8 @@ def horse_move_and_fight(num,d):
                 elif horse_board[ny][nx] != horse_num and horse_board[ny][nx] != 0:
                     if horse_board[ny][nx] not in moving_horse:
                         moving_horse.append(horse_board[ny][nx])
+            else:
+                return
 
     # 기사들을 이동시켜줌.
     while tmp:
@@ -52,7 +55,10 @@ def horse_move_and_fight(num,d):
 
     for i in range(1, len(horse_index)):
         for (y,x) in horse_index[i]:
-            horse_board[y][x] = i
+            try:
+                horse_board[y][x] = i
+            except:
+                Exception
 
 
     # 함정 계산
