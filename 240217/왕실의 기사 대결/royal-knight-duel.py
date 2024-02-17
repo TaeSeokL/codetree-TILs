@@ -67,23 +67,18 @@ def horse_move_and_fight(num,d):
     # 배열을 또 생성하고 딥카피하는게 시간이 많이 걸릴거같아서
     # 라인 75 ~ 라인 81 까지의 과정으로 원래 있던 위치를 0으로 모두 만들어주고 새로운 위치에
     # 기사를 업데이트 하는 것으로 진행했음.
-    temp_board = [[0]*l for _ in range(l)]
-
     while real_moving_horse:
         horse_num = real_moving_horse.popleft()
         temp = []
         for (y,x) in horse_index[horse_num]:
             ny, nx = y + dy, x + dx
             temp.append((ny,nx))
-            # horse_board[y][x] = 0
+            horse_board[y][x] = 0
         horse_index[horse_num] = temp
 
     for i in range(1, len(horse_index)):
         for (y,x) in horse_index[i]:
-            # horse_board[y][x] = i
-            temp_board[y][x] = i
-
-    horse_board = deepcopy(temp_board)
+            horse_board[y][x] = i
 
     # 데미지를 받아야하는 기사들의 위치 인덱스안에 함정이 있는지 체크함.
     # 함정이 있고, 생존해있다면 체력을 1씩 깎아줌.
@@ -98,8 +93,6 @@ def horse_move_and_fight(num,d):
             for (y,x) in horse_index[i]:
                 horse_board[y][x] = 0
 
-
-
 if __name__=='__main__':
     l,n,q = map(int,input().split())                            # l = 맵크기, n = 기사수, q = 왕 명령 수
     board = [list(map(int,input().split())) for _ in range(l)]  # 함정과 벽, 빈칸 배열
@@ -108,7 +101,6 @@ if __name__=='__main__':
         for j in range(l):
             if board[i][j] == 1:
                 bomb_index.append((i,j))
-
 
     horse_board = [[0]*l for _ in range(l)]     # 기사들 저장할 배열
     horse_index = [[] for _ in range(n+1)]      # 기사 위치 인덱스 배열
