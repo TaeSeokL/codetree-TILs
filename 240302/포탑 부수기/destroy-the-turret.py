@@ -26,18 +26,22 @@ if __name__=='__main__':
     board = [list(map(int,input().split())) for _ in range(n)]  # 맵정보
     attack_turn = [[0]*m for _ in range(n)]                     # 포탑별 최근 공격한 턴 저장
     total_potop = 0
-    related_attack = []                                         # 공격에 영향 받은 포탑들 위치
+
+    for r in range(n):
+        for c in range(m):
+            if board[r][c] != 0:
+                total_potop += 1
 
     # 턴수만큼 반복
-    for turn in range(k):
+    for turn in range(1,k+1):
         # 공격자와 피해자 선정 : 완전 탐색 + 다중정렬
         # 공격자 피해자 후보들 저장배열
         temp = []
+        related_attack = []  # 공격에 영향 받은 포탑들 위치
         for r in range(n):
             for c in range(m):
                 if board[r][c] != 0:
                     temp.append((r,c,r+c,board[r][c],attack_turn[r][c]))
-                    total_potop += 1
         # 후보들을 우선순위 기준으로 정렬
         # 공격력 가장 낮은 -> 가장 최근에 공격 -> 행과 열 합이 가장 큰 -> 열이 가장 큰
         temp.sort(key=lambda x:(x[3],-x[4],-x[2],-x[1]))
@@ -63,10 +67,12 @@ if __name__=='__main__':
             # 경로에 있는 놈들 공격
             for i in range(len(min_road)-1):
                 ry, rx = min_road[i]
-                board[ry][rx] -= board[attack_y][attack_x]//2
-                related_attack.append((ry,rx))
-                if board[ry][rx] == 0:
-                    total_potop -= 1
+                if board[ry][rx] > 0 :
+                    board[ry][rx] -= board[attack_y][attack_x]//2
+                    related_attack.append((ry,rx))
+                    if board[ry][rx] <= 0:
+                        board[ry][rx] = 0
+                        total_potop -= 1
 
             board[damage_y][damage_x] -= board[attack_y][attack_x]
         else:
@@ -76,13 +82,15 @@ if __name__=='__main__':
                 ny, nx = damage_y + dy, damage_x + dx
                 ny, nx = ny%n, nx%m
 
-                if ny != attack_y and nx != attack_x:
+                if not (ny == attack_y and nx == attack_x) and board[ny][nx] > 0:
                     related_attack.append((ny,nx))
                     board[ny][nx] -= board[attack_y][attack_x]//2
-                    if board[ny][nx] == 0:
+                    if board[ny][nx] <= 0:
+                        board[ny][nx] = 0
                         total_potop -= 1
 
-        if board[damage_y][damage_x] == 0:
+        if board[damage_y][damage_x] <= 0:
+            board[damage_y][damage_x] = 0
             total_potop -= 1
 
         # 포탑 부수기 : 여기서 살아남은 포탑 갯수 확인하기, 1개만 살아있다면 게임 종료
