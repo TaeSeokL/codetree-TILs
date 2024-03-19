@@ -1,5 +1,7 @@
 from collections import deque
+# 격자내에 있는 사람 자신의 목표 편의점으로 최단 거리 한칸 움직이는 함수 : BFS + 경로
 def move_person(num):
+    # 탐색 큐와 방문 체크 배열
     dq = deque()
     check = [[0]*n for _ in range(n)]
 
@@ -7,34 +9,32 @@ def move_person(num):
     y, x = person[num]
     sy, sx = store[num]
 
+    # 탐색 시작점 = 사람의 현재 위치 추카
     dq.append((y,x,[]))
 
     # 방향 우선순위대로 BFS
     while dq:
         y,x,road = dq.popleft()
-
         for dy, dx in ((-1,0),(0,-1),(0,1),(1,0)):
             ny,nx = y + dy, x + dx      # 사람의 다음 위치
-            # 범위내이고, 통행금지칸이 아닐때
+            # 범위내이고, 통행금지칸이 아닐때, 방문 안했을때
             if 0<=ny<n and 0<=nx<n and board[ny][nx] != -5 and check[ny][nx] == 0:
                 # 목적지 찾았을때
                 if ny == sy and nx == sx:
-                    # 중간에 경로가 있을때 -> 젤 처음 이동 위치로 갱신
+                    # 중간 경로가 있을때 -> 젤 처음 이동 위치로 갱신
                     if road:
                         person[num] = (road[0][0],road[0][1])
-                        # 거기가 편의점 위치라면 처리
-                        if person[num] == (sy,sx):
-                            person[num] = False
-                            never_can_go.append((sy,sx))
-                            # board[sy][sx] = -5
+                        # # 거기가 편의점 위치라면 처리
+                        # if person[num] == (sy,sx):
+                        #     person[num] = False
+                        #     never_can_go.append((sy,sx))
+                        #     # board[sy][sx] = -5
                         return
-                    # 중간에 경로가 없이 다이렉트로 한번만에 도착햇을때
-                    else:
+                    else: # 중간에 경로가 없이 한번의 이동만에 도착지로 왔을때
                         person[num] = False
                         never_can_go.append((sy,sx))
-                        # board[sy][sx] = -5
                         return
-                # 목적지 못찾았을때
+                # 목적지 못찾았을때 -> 계속 탐색
                 else:
                     dq.append((ny,nx,road+[(ny,nx)]))
                     check[ny][nx] = 1
@@ -85,9 +85,9 @@ if __name__=='__main__':
 
     time = 1
     while True:
-        # 사람이 이동 후 편의점에 도착하면 나머지 사람 모두 이동 후 그 칸을 금지 처리해야하기때문에
-        # 이 배열을 정의해줌.
+        # 사람이 이동 후 편의점에 도착하면 나머지 사람 모두 이동 후 그 칸을 금지 처리해야하기때문에 이 배열을 정의해줌.
         never_can_go = []
+
         # 사람이 어디있는지 파악하며 격자내에 위치할 경우만 움직여줌.
         for i in range(1,m+1):
             if person[i] is not True and person[i] is not False:
@@ -95,12 +95,12 @@ if __name__=='__main__':
                 # 이 함수에서 편의점 도착 상황도 같이 처리
                 move_person(i)
 
-        # 통행금지 처리하기
+        # 바로 위 과정에서 편의점 도착한 사람이 있으면 통행금지 처리하기
         if never_can_go:
             for y,x in never_can_go:
                 board[y][x] = -5
 
-        # 사람 전부 도착했는지 여기서 확인
+        # 사람 전부 편의점에 도착했는지 여기서 확인
         for i in range(1,m+1):
             if person[i] is not False:
                 break
@@ -108,8 +108,22 @@ if __name__=='__main__':
             print(time)
             break
 
+        # time번 사람 베이스 캠프에 집어넣기
         if time <= m:
-            # time번 사람 베이스 캠프에 집어넣기
             find_near_base_camp(time)
 
         time += 1
+#
+# # 틀린테케
+# 7 3
+# 0 0 0 0 0 0 0
+# 0 0 0 0 0 0 0
+# 0 0 1 0 1 0 0
+# 0 0 1 0 0 0 0
+# 0 0 0 0 0 0 0
+# 0 0 0 0 0 0 0
+# 0 0 0 0 0 0 0
+# 4 2
+# 4 4
+# 5 3
+# 이유 : 통행금지처리를 하는 위치가 잘못됐음.
