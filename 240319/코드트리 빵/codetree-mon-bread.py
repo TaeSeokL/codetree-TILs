@@ -26,14 +26,13 @@ def move_person(num):
                         if person[num] == (sy,sx):
                             person[num] = False
                             never_can_go.append((sy,sx))
-                            board[sy][sx] = -5
-
+                            # board[sy][sx] = -5
                         return
                     # 중간에 경로가 없이 다이렉트로 한번만에 도착햇을때
                     else:
                         person[num] = False
                         never_can_go.append((sy,sx))
-                        board[sy][sx] = -5
+                        # board[sy][sx] = -5
                         return
                 # 목적지 못찾았을때
                 else:
@@ -96,6 +95,11 @@ if __name__=='__main__':
                 # 이 함수에서 편의점 도착 상황도 같이 처리
                 move_person(i)
 
+        # 통행금지 처리하기
+        if never_can_go:
+            for y,x in never_can_go:
+                board[y][x] = -5
+
         # 사람 전부 도착했는지 여기서 확인
         for i in range(1,m+1):
             if person[i] is not False:
@@ -107,10 +111,5 @@ if __name__=='__main__':
         if time <= m:
             # time번 사람 베이스 캠프에 집어넣기
             find_near_base_camp(time)
-
-        # 통행금지 처리하기
-        if never_can_go:
-            for y,x in never_can_go:
-                board[y][x] = -5
 
         time += 1
