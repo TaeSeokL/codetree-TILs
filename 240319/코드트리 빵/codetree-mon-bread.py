@@ -24,11 +24,6 @@ def move_person(num):
                     # 중간 경로가 있을때 -> 젤 처음 이동 위치로 갱신
                     if road:
                         person[num] = (road[0][0],road[0][1])
-                        # # 거기가 편의점 위치라면 처리
-                        # if person[num] == (sy,sx):
-                        #     person[num] = False
-                        #     never_can_go.append((sy,sx))
-                        #     # board[sy][sx] = -5
                         return
                     else: # 중간에 경로가 없이 한번의 이동만에 도착지로 왔을때
                         person[num] = False
@@ -113,17 +108,3 @@ if __name__=='__main__':
             find_near_base_camp(time)
 
         time += 1
-#
-# # 틀린테케
-# 7 3
-# 0 0 0 0 0 0 0
-# 0 0 0 0 0 0 0
-# 0 0 1 0 1 0 0
-# 0 0 1 0 0 0 0
-# 0 0 0 0 0 0 0
-# 0 0 0 0 0 0 0
-# 0 0 0 0 0 0 0
-# 4 2
-# 4 4
-# 5 3
-# 이유 : 통행금지처리를 하는 위치가 잘못됐음.
