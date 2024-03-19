@@ -1,26 +1,44 @@
 from collections import deque
 def move_person(num):
-    # 사람의 현재 위치와 편의점의 위치와 두 위치간 거리
+    dq = deque()
+    check = [[0]*n for _ in range(n)]
+
+    # 사람의 현재 위치와 편의점의 위치
     y, x = person[num]
     sy, sx = store[num]
-    pd = abs(y-sy)+abs(x-sx)
 
-    # 방향 우선순위대로 가까워지는 위치 찾기
-    for dy, dx in ((-1,0),(0,-1),(0,1),(1,0)):
-        ny,nx = y + dy, x + dx      # 사람의 다음 위치
-        # 범위내이고, 통행금지칸이 아닐때
-        if 0<=ny<n and 0<=nx<n and board[ny][nx] != -5:
-            # 만약 편의점에 도착했다면 사람 상태 바꿔주고, 예비통행금지배열에 위치추가
-            if ny == sy and nx == sx:
-                person[num] = False
-                never_can_go.append((ny,nx))
-                return
-            else:
-                nd = abs(ny-sy)+abs(nx-sx)  # 이동 후 편의점 과의 거리
-                # 만약 가까워졌다면 위치 업데이트
-                if nd < pd :
-                    person[num] = (ny,nx)
-                    return
+    dq.append((y,x,[]))
+
+    # 방향 우선순위대로 BFS
+    while dq:
+        y,x,road = dq.popleft()
+
+        for dy, dx in ((-1,0),(0,-1),(0,1),(1,0)):
+            ny,nx = y + dy, x + dx      # 사람의 다음 위치
+            # 범위내이고, 통행금지칸이 아닐때
+            if 0<=ny<n and 0<=nx<n and board[ny][nx] != -5 and check[ny][nx] == 0:
+                # 목적지 찾았을때
+                if ny == sy and nx == sx:
+                    # 중간에 경로가 있을때 -> 젤 처음 이동 위치로 갱신
+                    if road:
+                        person[num] = (road[0][0],road[0][1])
+                        # 거기가 편의점 위치라면 처리
+                        if person[num] == (sy,sx):
+                            person[num] = False
+                            never_can_go.append((sy,sx))
+                            board[sy][sx] = -5
+
+                        return
+                    # 중간에 경로가 없이 다이렉트로 한번만에 도착햇을때
+                    else:
+                        person[num] = False
+                        never_can_go.append((sy,sx))
+                        board[sy][sx] = -5
+                        return
+                # 목적지 못찾았을때
+                else:
+                    dq.append((ny,nx,road+[(ny,nx)]))
+                    check[ny][nx] = 1
 
 def find_near_base_camp(num):
     # 탐색 큐와 체크 배열 정의
