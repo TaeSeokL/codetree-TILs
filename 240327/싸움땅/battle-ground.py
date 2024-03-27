@@ -75,8 +75,10 @@ if __name__=='__main__':
 
             # [2] 문제 조건 처리
             if 0<=ny<n and 0<=nx<n :                  # 범위내
-                player_pos[y][x] = 0
                 if player_pos[ny][nx] != 0 :               # 이동 위치에 다른 플레이어 있을때 : 싸우기
+                    player_pos[y][x] = 0
+                    player[i] = [ny, nx, d, s]
+
                     a_player = i                        # 이동한 플레이어
                     b_player = player_pos[ny][nx]       # 원래 있던 플레이어
 
@@ -107,8 +109,6 @@ if __name__=='__main__':
                             player_point[b_player] += b_total_stat - a_total_stat
                             lose(a_player, ny, nx)
                             win(b_player, ny, nx)
-
-
                 else:                                      # 이동 위치에 아무도 없을때
                     # 플레이어 정보갱신
                     player_pos[y][x], player_pos[ny][nx] = 0,i
@@ -134,8 +134,10 @@ if __name__=='__main__':
 
                 # [2] 문제 조건 처리
                 if 0 <= ny < n and 0 <= nx < n:  # 범위내
-                    player_pos[y][x] = 0
                     if player_pos[ny][nx] != 0:  # 이동 위치에 다른 플레이어 있을때 : 싸우기
+                        player_pos[y][x] = 0
+                        player[i] = [ny,nx,d,s]
+
                         a_player = i  # 이동한 플레이어
                         b_player = player_pos[ny][nx]  # 원래 있던 플레이어
 
@@ -183,6 +185,23 @@ if __name__=='__main__':
                                 gun_arr[ny][nx].sort(reverse=True)
 
                                 player_gun[i] = gun_arr[ny][nx].pop(0)
+
+            # print('------------%d 번 이동 후 사람 배열--------------'%i)
+            # for r in range(n):
+            #     for c in range(n):
+            #         print(player_pos[r][c], end=' ')
+            #     print()
+            # print()
+            # print('------------%d 번 이동 후 총 배열--------------'%i)
+            # for r in range(n):
+            #     for c in range(n):
+            #         print(gun_arr[r][c], end = ' ')
+            #     print()
+            # print()
+            # print('------------%d 번 이동 후 포인트--------------'%i)
+            # for i in range(1, m + 1):
+            #     print(player_point[i], end=' ')
+            # print()
 
 
 
