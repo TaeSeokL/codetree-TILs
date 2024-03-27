@@ -148,7 +148,6 @@ if __name__=='__main__':
                             lose(b_player, ny, nx)
                             win(a_player, ny, nx)
 
-
                         elif a_total_stat < b_total_stat:  # b가 이겼을때
                             player_point[b_player] += b_total_stat - a_total_stat
                             lose(a_player, ny, nx)
@@ -167,8 +166,6 @@ if __name__=='__main__':
                                 player_point[b_player] += b_total_stat - a_total_stat
                                 lose(a_player, ny, nx)
                                 win(b_player, ny, nx)
-
-
                     else:  # 이동 위치에 아무도 없을때
                         player_pos[y][x], player_pos[ny][nx] = 0, i  # 위치 갱신
                         player[i] = [ny, nx, d, s]
