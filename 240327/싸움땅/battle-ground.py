@@ -1,38 +1,38 @@
+# 이긴 사람 후속 처리 함수
 def win(num,y,x):
     # 승리한칸에 있는 총들과 자기가 갖고 있는 총중에 가장 쎈거 들기
     temp = gun_arr[y][x] + [player_gun[num]]
     temp.sort(reverse=True)
-
     player_gun[num] = temp.pop(0)
     gun_arr[y][x] = temp
 
-    # 플레이어 정보 갱신
+    # 플레이어 정보 갱신하고 좌표에 표시해주기 -> 이긴 사람은 그 자리 유지
     _,_,d,s = player[num]
     player[num] = [y,x,d,s]
     player_pos[y][x] = num
     return
 
+# 진 사람 후속 처리 함수
 def lose(num,y,x):
-
     # 자기가 갖고 있던 총 격자에 내려두기
     if player_gun[num] != 0:
         gun_arr[y][x].append(player_gun[num])
         player_gun[num] = 0
 
-    # 해당 플레이어가 원래 가지고 있던 방향대로 한칸 가기
+    # 해당 플레이어가 원래 가지고 있던 방향대로 한칸 가기 -> 못가면 오른쪽으로 90도씩 회전하기
     _,_,d,s = player[num]
 
     for i in range(4):
         dd = (d+i)%4
         ny = y + dir[dd][0]
         nx = x + dir[dd][1]
-
+        # 범위내이고, 사람이 없는 곳으로 이동 가능
         if 0<=ny<n and 0<=nx<n and player_pos[ny][nx] == 0 :
-            # 플레이어 정보 갱신
+            # 플레이어 정보 갱신하고 좌표에 표시해주기 -> 진사람은 움직여야함.
             player[num] = [ny,nx,dd,s]
             player_pos[y][x],player_pos[ny][nx] = 0,num
 
-            # 총 있을 경우 획득
+            # 움직인 위치에 총 있을 경우 획득
             if len(gun_arr[ny][nx]) > 0:
                 gun_arr[ny][nx].sort(reverse=True)
                 player_gun[num] = gun_arr[ny][nx].pop(0)
@@ -74,59 +74,58 @@ if __name__=='__main__':
             nx = x + dir[d][1]
 
             # [2] 문제 조건 처리
-            if 0<=ny<n and 0<=nx<n :                  # 범위내
-                if player_pos[ny][nx] != 0 :               # 이동 위치에 다른 플레이어 있을때 : 싸우기
+            if 0<=ny<n and 0<=nx<n :                                             # 범위내
+                if player_pos[ny][nx] != 0 :                                        # 이동 위치에 다른 플레이어 있을때 : 싸우기
+                    # 이동한 플레이어 위치와 정보 갱신 / 아직 누가 이길지 알 수 없기 때문에
+                    # 이동한 위치는 표시안하고 전에 있던 위치만 초기화해준다. 승패에 따라 함수에서 좌표 처리
                     player_pos[y][x] = 0
                     player[i] = [ny, nx, d, s]
 
-                    a_player = i                        # 이동한 플레이어
-                    b_player = player_pos[ny][nx]       # 원래 있던 플레이어
+                    a_player = i                                                        # 이동한 플레이어
+                    b_player = player_pos[ny][nx]                                       # 원래 있던 플레이어
 
-                    a_total_stat = player_gun[a_player] + player[a_player][3]   # 총 능력치 2개 구하기
+                    a_total_stat = player_gun[a_player] + player[a_player][3]           # 총 능력치 구하기
                     b_total_stat = player_gun[b_player] + player[b_player][3]
 
-                    if a_total_stat > b_total_stat:     # a가 이겼을때
+                    if a_total_stat > b_total_stat:                                         # a가 이겼을때
                         player_point[a_player] += a_total_stat - b_total_stat
                         lose(b_player, ny, nx)
                         win(a_player,ny,nx)
 
-
-                    elif a_total_stat < b_total_stat:   # b가 이겼을때
+                    elif a_total_stat < b_total_stat:                                       # b가 이겼을때
                         player_point[b_player] += b_total_stat - a_total_stat
                         lose(a_player, ny, nx)
                         win(b_player, ny, nx)
 
-                    else:                               # 같을때 -> 초기 능력치만 비교
+                    else:                                                                   # 같을때 -> 초기 능력치만 비교
                         a_stat = player[a_player][3]
                         b_stat = player[b_player][3]
 
-                        if a_stat > b_stat:             # a가 이겼을때
+                        if a_stat > b_stat:                                                     # a가 이겼을때
                             player_point[a_player] += a_total_stat - b_total_stat
                             lose(b_player, ny, nx)
                             win(a_player, ny, nx)
 
-                        else:                           # b가 이겼을때
+                        else:                                                                   # b가 이겼을때
                             player_point[b_player] += b_total_stat - a_total_stat
                             lose(a_player, ny, nx)
                             win(b_player, ny, nx)
-                else:                                      # 이동 위치에 아무도 없을때
+                else:                                                               # 이동 위치에 아무도 없을때
                     # 플레이어 정보갱신
                     player_pos[y][x], player_pos[ny][nx] = 0,i
                     player[i] = [ny,nx,d,s]
 
-                    if len(gun_arr[ny][nx]) > 0 :               # 이동 위치에 총이 있을때
-                        if player_gun[i] != 0:                      # 플레이어가 총 갖고 있을때 : 총교체
+                    if len(gun_arr[ny][nx]) > 0 :                                       # 이동 위치에 총이 있을때
+                        if player_gun[i] != 0:                                              # 플레이어가 총 갖고 있을때 : 총교체
                             temp = gun_arr[ny][nx] + [player_gun[i]]
                             temp.sort(reverse=True)
-
                             player_gun[i] = temp.pop(0)
                             gun_arr[ny][nx] = temp
-                        else:                                       # 플레이어가 총 안갖고 있을때 : 총줍기
+                        else:                                                               # 플레이어가 총 안갖고 있을때 : 총줍기
                             gun_arr[ny][nx].sort(reverse=True)
-
                             player_gun[i] = gun_arr[ny][nx].pop(0)
 
-            else:                               # 범위밖 -> 방향전환
+            else:                                                               # 범위밖 -> 방향전환 빼고는 위와 동일
                 d = (d+2)%4
 
                 ny = y + dir[d][0]
@@ -178,32 +177,11 @@ if __name__=='__main__':
                             if player_gun[i] != 0:  # 플레이어가 총 갖고 있을때 : 총교체
                                 temp = gun_arr[ny][nx] + [player_gun[i]]
                                 temp.sort(reverse=True)
-
                                 player_gun[i] = temp.pop(0)
                                 gun_arr[ny][nx] = temp
                             else:  # 플레이어가 총 안갖고 있을때 : 총줍기
                                 gun_arr[ny][nx].sort(reverse=True)
-
                                 player_gun[i] = gun_arr[ny][nx].pop(0)
-
-            # print('------------%d 번 이동 후 사람 배열--------------'%i)
-            # for r in range(n):
-            #     for c in range(n):
-            #         print(player_pos[r][c], end=' ')
-            #     print()
-            # print()
-            # print('------------%d 번 이동 후 총 배열--------------'%i)
-            # for r in range(n):
-            #     for c in range(n):
-            #         print(gun_arr[r][c], end = ' ')
-            #     print()
-            # print()
-            # print('------------%d 번 이동 후 포인트--------------'%i)
-            # for i in range(1, m + 1):
-            #     print(player_point[i], end=' ')
-            # print()
-
-
 
     for i in range(1,m+1):
         print(player_point[i], end= ' ')
