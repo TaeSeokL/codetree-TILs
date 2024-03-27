@@ -25,11 +25,11 @@ def move_player():
                 if (npy, npx) != (y, x):
                     player[i] = [npy, npx, pd]
 
-def start_catch(y,x):
+def start_catch(y,x,d):
     global ans
     temp = [(y, x)]
     for _ in range(2):
-        y, x = y + dir[d][0], x + dir[d][1]
+        y, x = y + dir[d%4][0], x + dir[d%4][1]
         if 0 <= y < n and 0 <= x < n:
             temp.append((y, x))
 
@@ -96,7 +96,7 @@ if __name__=='__main__':
 
             # 술래 이동 완료, 감시 시작
             # 잡을 수 있는 위치 구하기
-            start_catch(y,x)
+            start_catch(y,x,d)
 
             # 플레이어 다 죽었는지 확인
             if not player:
@@ -124,7 +124,7 @@ if __name__=='__main__':
 
             y, x = ny,nx
 
-            start_catch(y,x)
+            start_catch(y,x,d)
 
             # 플레이어 다 죽었는지 확인
             if not player:
@@ -166,7 +166,7 @@ if __name__=='__main__':
 
             y, x = ny ,nx
 
-            start_catch(y, x)
+            start_catch(y, x,d)
 
             # 플레이어 다 죽었는지 확인
             if not player:
