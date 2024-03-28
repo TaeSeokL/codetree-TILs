@@ -110,5 +110,6 @@ if __name__=='__main__':
 
         # [4] 플레이어 다 잡혔는지 확인
         if not player:
-            print(ans)
-            exit(0)
+            break
+
+    print(ans)
