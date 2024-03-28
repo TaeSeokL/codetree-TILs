@@ -1,11 +1,11 @@
 # 모법 코드
 
 # 플레이어들을 이동시켜주는 함수 -> 술래와의 거리 계산 후 3이하인 사람들만 이동시키기
-def move_player():
+def move_player(y,x,d):
     for i in range(len(player)):
         py, px, pd = player[i]                      # 플레이어 정보 받기
 
-        dis = abs(ny-py) + abs(nx-px)                 # 술래와의 거리 계산
+        dis = abs(y-py) + abs(x-px)                 # 술래와의 거리 계산
 
         if dis <= 3:
             npy = py + player_dir[pd][0]
@@ -83,7 +83,7 @@ if __name__=='__main__':
 
     for turn in range(1,k+1):
         # [1] 플레이어 이동
-        move_player()
+        move_player(ny,nx,d)
 
         # [2] 술래 이동
         cnt += 1
@@ -93,7 +93,7 @@ if __name__=='__main__':
         if (ny, nx) == (0, 0):                              # 1. 밖에서 안으로 들어가는 토네이도로 전환 시점
             max_cnt, cnt, flag, d, val = n, 1, 1, 2, -1
         elif (ny, nx) == (n // 2, n // 2):                  # 2. 안에서 밖으로 나가는 토네이도로 전환 시점
-            max_cnt, cnt, flag, d, val = 1, 0, 0, 1, 1
+            max_cnt, cnt, flag, d, val = 1, 0, 0, 0, 1
         else:                                               # 3. 둘 다 아닐때는 그냥 하던데로 이동
             if cnt == max_cnt:
                 d = (d + val) % 4
