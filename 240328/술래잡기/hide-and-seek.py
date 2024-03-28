@@ -5,7 +5,7 @@ def move_player():
     for i in range(len(player)):
         py, px, pd = player[i]                      # 플레이어 정보 받기
 
-        dis = abs(y-py) + abs(x-px)                 # 술래와의 거리 계산
+        dis = abs(ny-py) + abs(nx-px)                 # 술래와의 거리 계산
 
         if dis <= 3:
             npy = py + player_dir[pd][0]
