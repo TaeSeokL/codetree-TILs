@@ -40,29 +40,29 @@ def throw_ball(round):
     elif n + 1 <= round <= 2 * n:  # 위쪽으로 가는 공
         by, bx = n - 1, (round - 1) % n
         bd = 1
-    elif 2 * n + 1 <= round <= 3 * n:  # 왼쪽으로 가는 공 (거꾸로 처리)
-        by, bx = (round - 1) % n, n - 1
+    elif 2 * n + 1 <= round <= 3 * n:  # 왼쪽으로 가는 공
+        by, bx = n-1-(round - 1) % n, n - 1
         bd = 2
-    else:  # 아래쪽으로 가는 공 (거꾸로 처리)
-        by, bx = 0, (round - 1) % n
+    else:  # 아래쪽으로 가는 공
+        by, bx = 0, n - 1 - (round - 1) % n
         bd = 3
 
     # [3] 공이 던져지는 과정 구현
-    for _ in range(n - 1):
+    for _ in range(n):
         if board[by][bx] != 0 and board[by][bx] != -4:  # 사람 발견한 경우
             ans += board[by][bx] ** 2
 
             # 해당팀 머리 꼬리 바꾸기
             for tnum in range(1,len(team)):
                 if [by,bx] in team[tnum]:
-                    # 원래 머리 좌표와 꼬리 좌표 구해서 좌표상 위치 바꾸기
-                    hy,hx = team[tnum][1]
-                    ty,tx = team[tnum][len(team[tnum])-1]
-                    board[hy][hx], board[ty][tx] = board[ty][tx], board[hy][hx]
+                    temp = team[tnum][1:]
+                    temp.reverse()
+                    temp = [0] + temp
 
-                    # 팀 정보 갱신
-                    team[tnum][1], team[tnum][len(team[tnum])-1] = team[tnum][len(team[tnum])-1], team[tnum][1]
-
+                    team[tnum] = temp
+                    for i in range(1,len(temp)):
+                        yy,xx = temp[i]
+                        board[yy][xx] = i
                     return
         else:
             by, bx = by + ball_dir[bd][0], bx + ball_dir[bd][1]
