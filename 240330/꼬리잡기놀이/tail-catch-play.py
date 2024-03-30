@@ -42,20 +42,20 @@ def move_player():
 
 def throw_ball(round):
     global ans
+    round = round%(4*n)
 
-    if 1 <= round <= n:  # 오른쪽으로 가는 공
-        by, bx = round - 1, 0
+    if round//n == 0:  # 오른쪽으로 가는 공
+        by, bx = round%n, 0
         bd = 0
-    elif n + 1 <= round <= 2 * n:  # 위쪽으로 가는 공
-        by, bx = n - 1, (round - 1) % n
+    elif round//n == 1:  # 위쪽으로 가는 공
+        by, bx = n - 1, round % n
         bd = 1
-    elif 2 * n + 1 <= round <= 3 * n:  # 왼쪽으로 가는 공
-        by, bx = n-1-(round - 1) % n, n - 1
+    elif round//n == 2:  # 왼쪽으로 가는 공
+        by, bx = n-1- round% n, n - 1
         bd = 2
     else:  # 아래쪽으로 가는 공
-        by, bx = 0, n - 1 - (round - 1) % n
+        by, bx = 0, n - 1 - round % n
         bd = 3
-
     # [3] 공이 던져지는 과정 구현
     for _ in range(n):
         if board[by][bx] > 4:  # 사람 발견한 경우
@@ -85,7 +85,7 @@ if __name__=='__main__':
                 team_number += 1
 
 
-    for round in range(1,k+1):
+    for round in range(k):
         # [1] 팀 이동
         move_player()
 
