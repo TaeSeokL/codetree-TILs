@@ -1,24 +1,25 @@
 from collections import deque
+# 점수 얻는 BFS
 def bfs(y,x,v):
     global ans
-    dq = deque()
-    check = [[0]*n for _ in range(n)]
+    dq = deque()                            # 탐색 큐
+    check = [[0]*n for _ in range(n)]       # 방문 배열
 
-    dq.append((y,x))
-    check[y][x] = 1
-    ans += v
+    dq.append((y,x))        # 초기 위치 추가
+    check[y][x] = 1         # 방문 체크
+    ans += v                # 정답 누적
 
     while dq:
         py, px = dq.popleft()
 
+        # 인접한 곳 탐색하기
         for dy, dx in ((-1,0),(0,1),(1,0),(0,-1)):
             yy,xx = py + dy, px + dx
-
+            # 범위내이고 방문안했고 현재 주사위가 놓인 보드상 숫자와 같을때만 탐색 이어감 / 그리고 정답 누적
             if 0<=yy<n and 0<=xx<n and check[yy][xx] == 0 and board[yy][xx] == v:
                 dq.append((yy,xx))
                 check[yy][xx] = 1
                 ans += v
-
 
 if __name__=='__main__':
     n,m = map(int,input().split())                                # n 격자 크기 / m 주사위 굴리는 횟수
@@ -55,7 +56,7 @@ if __name__=='__main__':
                 n1, n2, n5, n6 = n5, n1, n6, n2
             else:           # 왼쪽으로 구른 경우
                 n1, n3, n4, n6 = n3, n6, n1, n4
-        y, x = ny, nx
+        y, x = ny, nx       # 위치 갱신
 
         # 방향 조정
         if board[ny][nx] < n6:
