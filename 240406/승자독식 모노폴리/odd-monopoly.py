@@ -20,16 +20,15 @@ def move_player():
                     break
 
     # 겹친 플레이어 삭제
-    player.sort(key=lambda x: (x[1], x[2]))
+    player.sort(key=lambda x: (x[1], x[2],x[0]))
     for i in range(len(player) - 1, 0, -1):
         if (player[i][1], player[i][2]) == (player[i - 1][1], player[i - 1][2]):
             player.pop(i)
 
-    player.sort(key=lambda x:x[0])
     # 최종적으로 이동한 곳 계약
     for i in range(len(player)):
         num,y,x,d = player[i]
-        board[y][x] = [num,k]
+        board[y][x] = [num,k+1]
 
 if __name__=='__main__':
     n, m, k = map(int,input().split())                          # n 맵크기 / m 플레이어 수 / k 독점계약턴수
@@ -58,6 +57,9 @@ if __name__=='__main__':
 
     turn = 1
     while turn < 1000:
+        # 플레이어 이동
+        move_player()
+
         # 독점 계약 턴 수 줄이기
         for r in range(n):
             for c in range(n):
@@ -66,9 +68,6 @@ if __name__=='__main__':
                         board[r][c] = 0
                     else:
                         board[r][c][1] -= 1
-
-        # 플레이어 이동
-        move_player()
 
         # 1만 살았는지 확인
         if len(player) == 1:
