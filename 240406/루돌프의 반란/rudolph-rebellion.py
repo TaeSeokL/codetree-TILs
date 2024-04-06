@@ -75,9 +75,10 @@ def move_santa():
                     if dis < min_val:
                         min_val,min_y,min_x,sd = dis,sy,sx,dd
 
-            sy, sx = min_y, min_x
             if min_val == ori_dis:
                 continue
+            sy, sx = min_y, min_x
+            board[y][x] = 0
             if (sy,sx) == (ry,rx):                # 루돌프 만났을때
                 # 산타 -> 루돌프 충돌 구현
                 santa_score[i] += d
