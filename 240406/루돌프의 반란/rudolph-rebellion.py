@@ -113,7 +113,6 @@ def move_santa():
 
                     else:  # 다른 산타 없을때
                         board[nsy][nsx] = i
-                        board[y][x] = 0
                         santa[i] = [nsy, nsx, 2, 0]
                 else:  # 범위밖일때
                     santa[i] = [0, 0, 0, 1]
