@@ -12,7 +12,7 @@ def move_rudolf():
     temp.sort(key=lambda x:(x[3],-x[1],-x[2]))  # 가장가깝고, r,c 가장 큰 산타
     num, sy, sx, dis = temp[0]                  # 조건에 가장 적합한 산타
 
-    min_val,min_y,min_x,rd = 100, 0, 0, 0
+    min_val,min_y,min_x,rd = 1000, -1, -1, 0
     for i in range(8):
         nry, nrx = ry + rudolf_dir[i][0], rx + rudolf_dir[i][1]
         n_dis = (nry-sy)**2 + (nrx-sx)**2       # 이동 후 거리 계산
@@ -29,32 +29,10 @@ def move_rudolf():
         nsy, nsx = ry + rudolf_dir[rd][0]*c, rx + rudolf_dir[rd][1]*c   # 산타 튕겨난 위치 계산
         if 0<=nsy<n and 0<=nsx<n:                                       # 범위내일때
             if board[nsy][nsx] != 0:                                    # 다른 산타 있을때
-                dq.append(board[nsy][nsx])                              # 다른 산타 추가
+                sanhojackyong(nsy,nsx,rudolf_dir[rd][0],rudolf_dir[rd][1])
 
-                board[nsy][nsx] = num                                   # 충돌 산타 업데이트
-                santa[num] = [nsy,nsx,2,0]
-
-                # 상호작용시작
-                while dq:
-                    num = dq.popleft()
-                    sy, sx,_,_ = santa[num]
-                    # 한칸이동
-                    nsy, nsx = sy + rudolf_dir[rd][0], sx + rudolf_dir[rd][1]
-                    if 0<=nsy<n and 0<=nsx<n:           # 범위내일때
-                        if board[nsy][nsx] != 0:        # 다른 산타 있을때
-                            dq.append(board[nsy][nsx])
-
-                            board[nsy][nsx] = num
-                            santa[num] = [nsy,nsx,0,0]
-                        else:                           # 다른 산타 없을때
-                            board[nsy][nsx] = num
-                            santa[num] = [nsy, nsx, 0, 0]
-                    else:                               # 범위 밖일때
-                        santa[num] = [0,0,0,1]
-
-            else:                                                       # 다른 산타 없을때
-                board[nsy][nsx] = num
-                santa[num] = [nsy,nsx,2,0]
+            board[nsy][nsx] = num                                   # 충돌 산타 업데이트
+            santa[num] = [nsy,nsx,2,0]
         else:                                                           # 범위밖일때
             santa[num] = [0,0,0,1]
     else:
@@ -86,34 +64,12 @@ def move_santa():
                 nsx = sx + d*santa_dir[(sd+2)%4][1]
                 if 0 <= nsy < n and 0 <= nsx < n:  # 범위내일때
                     if board[nsy][nsx] != 0:  # 다른 산타 있을때
-                        dq.append(board[nsy][nsx])  # 다른 산타 추가
+                        # 상호 작용 시작
+                        sanhojackyong(nsy,nsx,santa_dir[(sd+2)%4][0],santa_dir[(sd+2)%4][1])
 
-                        board[y][x] = 0
-                        board[nsy][nsx] = i  # 충돌 산타 업데이트
-                        santa[i] = [nsy, nsx, 2, 0]
-
-                        # 상호작용시작
-                        while dq:
-                            num = dq.popleft()
-                            yy, xx, _, _ = santa[num]
-                            # 한칸이동
-                            nsy, nsx = yy + santa_dir[(sd+2)%4][0] , xx + santa_dir[(sd+2)%4][1]
-                            if 0 <= nsy < n and 0 <= nsx < n:  # 범위내일때
-                                if board[nsy][nsx] != 0:  # 다른 산타 있을때
-                                    dq.append(board[nsy][nsx])
-
-                                    board[nsy][nsx] = num
-                                    santa[num] = [nsy, nsx, 0, 0]
-                                else:  # 다른 산타 없을때
-                                    board[nsy][nsx] = num
-                                    santa[num] = [nsy, nsx, 0, 0]
-                            else:  # 범위 밖일때
-                                santa[num] = [0, 0, 0, 1]
-                                board[yy][xx] = 0
-
-                    else:  # 다른 산타 없을때
-                        board[nsy][nsx] = i
-                        santa[i] = [nsy, nsx, 2, 0]
+                    # 충돌 산타 업데이트
+                    board[nsy][nsx] = i
+                    santa[i] = [nsy, nsx, 2, 0]
                 else:  # 범위밖일때
                     santa[i] = [0, 0, 0, 1]
                     board[y][x] = 0
@@ -122,6 +78,27 @@ def move_santa():
                 board[y][x] = 0
                 board[sy][sx] = i
                 santa[i][0], santa[i][1] = sy,sx
+
+def sanhojackyong(y,x,dy,dx):
+
+    dq.append(board[y][x])  # 다른 산타 추가
+    while dq:
+        num = dq.popleft()
+        y, x, _, _ = santa[num]
+        # 한칸이동
+        ny, nx = y +dy, x + dx
+        if 0 <= ny < n and 0 <= nx < n:  # 범위내일때
+            if board[ny][nx] != 0:  # 다른 산타 있을때
+                dq.append(board[ny][nx])
+
+                board[ny][nx] = num
+                santa[num] = [ny, nx, 0, 0]
+            else:  # 다른 산타 없을때
+                board[ny][nx] = num
+                santa[num] = [ny, nx, 0, 0]
+        else:  # 범위 밖일때
+            santa[num] = [0, 0, 0, 1]
+            board[y][x] = 0
 
 
 if __name__=='__main__':
