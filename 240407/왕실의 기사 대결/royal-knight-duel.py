@@ -1,5 +1,70 @@
 from collections import deque
 
+def horse_move(num, d):
+    maybe_horses = deque()  # 움직일 가능성이 있는 기사번호 저장
+    moving_horses = []      # 최종적으로 움직여야하는 기사번호 저장
+
+    maybe_horses.append(num)
+
+    while maybe_horses:
+        n = maybe_horses.popleft()  # 움직일 가능성있는 기사 기준 명령 방향으로 탐색
+
+        for y, x in player[n]:
+            ny = y + dir[d][0]
+            nx = x + dir[d][1]
+
+            # 범위내이고
+            if 0 <= ny < L and 0 <= nx < L:
+                # 벽이면 못움직임
+                if board[ny][nx] == 2:
+                    return
+
+                else:
+                    # 범위내이고 벽아니면 일단 이동가능 -> 중복제거
+                    if n not in moving_horses:
+                        moving_horses.append(n)
+
+                    # 다른 기사 있을 경우 또 탐색 해줌.
+                    if player_board[ny][nx] != n and player_board[ny][nx] != 0:
+                        if player_board[ny][nx] not in maybe_horses:
+                            maybe_horses.append(player_board[ny][nx])
+            # 범위밖이면 못움직임
+            else:
+                return
+
+    # ---여기까지 도착한거면 moving_horses에 있는 애들은 다 움직일 수 있는거임.
+    # 데미지 입힐애들을 먼저 구해야하기 때문에 moving_horses 카피해주고 명령받은애는 빼줌.
+    damage_player = moving_horses[:]
+    damage_player.remove(num)
+
+    # 기사들 위치를 업데이트해주고, 원래 있던 자리에서 없애줌.
+    for n in moving_horses:
+        temp = []
+        for y, x in player[n]:
+            ny, nx = y + dir[d][0], x + dir[d][1]
+
+            temp.append([ny, nx])
+            player_board[y][x] = 0
+        player[n] = temp
+
+    # 기사들 새로운 위치에 넣어줌.
+    # for n in moving_horses:
+    #     for y, x in player[n]:
+    #         player_board[y][x] = n
+    for n in range(1,N+1):
+        for y,x in player[n]:
+            player_board[y][x] = n
+
+    # 기사들 데미지 입혀줌.
+    for n in damage_player:
+        for y, x in player[n]:
+            if (y, x) in trap and energy[n] > 0:
+                energy[n] -= 1
+
+                if energy[n] == 0:
+                    for y, x, in player[num]:
+                        player_board[y][x] = 0
+
 if __name__=='__main__':
     L, N, Q = map(int,input().split())              # L 격자크기 / N 기사수 / Q 명령수
 
@@ -31,71 +96,11 @@ if __name__=='__main__':
 
     for turn in range(Q):
         num, d = map(int,input().split())           # 명령받은 기사와 방향
-        if energy[num] > 0 :     # 기사가 살아있을때
-            flag = 1
-            after_move = [[] for _ in range(N+1)]      # 기사들 이동 후 위치 저장 (번호,행,열)
-            damage_player = []   # 데미지 받을 기사 번호들
-            dq = deque()         # 탐색큐
-            # 명령받은 기사 탐색큐에 추가
-            for pos in player[num]:
-                y,x = pos
-                dq.append((num,y,x))
 
-            # 큐 빌때까지 탐색
-            while dq:
-                n,y,x = dq.popleft()
+        # 기사 죽은 경우 스킵
+        if energy[num] == 0 :    continue
 
-                ny = y + dir[d][0]
-                nx = x + dir[d][1]
-                # 이동 후 위치가 범위 내일때
-                if 0<=ny<L and 0<=nx<L :
-                    # 이동 후 칸이 벽일때 -> 밀린칸 배열 초기화 후 종료
-                    if board[ny][nx] == 2:
-                        flag = 0
-                        continue
-                    # 벽이 아니면 다 갈 수 있음.
-                    else:
-                        # 밀린칸 배열에 추가
-                        after_move[n].append([ny,nx])
-
-                        # 이동 후 칸에 다른 기사가 있을때
-                        if player_board[ny][nx] > 0 and player_board[ny][nx] != n:
-                            addi_num = player_board[ny][nx]
-                            if addi_num not in damage_player:   # 중복방지
-                                damage_player.append(addi_num)
-                                for pos in player[addi_num]:
-                                    y, x = pos
-                                    dq.append((addi_num, y, x))
-                # 이동 후 위치가 범위 밖일때
-                else:
-                    flag = 0
-                    continue
-
-            # 밀린 칸 배열이 존재할때
-            if flag == 1:
-                # 움직여야하는 기사들 위치 지우고 위치 갱신
-                for num in range(1,N+1):
-                    if after_move[num]:
-                        # 원래 위치 지워주기
-                        for y,x in player[num]:
-                            player_board[y][x] = 0
-
-                        player[num] = after_move[num]   # 위치갱신
-
-                for num in range(1,N+1):
-                    for y, x in player[num]:
-                        player_board[y][x] = num    # 밀린 위치 업데이트
-
-                # 데미지 받아야하는 기사들 꺼내서 데미지 입혀주기
-                for num in damage_player:
-                    for y,x in player[num]:
-                        if (y,x) in trap and energy[num] > 0:
-                            energy[num] -= 1
-
-                            # 기사 체력이 다 까졌을떄 -> 맵에서 지워주기
-                            if energy[num] == 0:
-                                for y,x, in player[num]:
-                                    player_board[y][x] = 0
+        horse_move(num,d)
 
     # 정답 계산
     ans = 0
