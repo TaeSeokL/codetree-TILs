@@ -68,6 +68,7 @@ if __name__=='__main__':
                                     dq.append((addi_num, y, x))
                 # 이동 후 위치가 범위 밖일때
                 else:
+                    flag = 0
                     continue
 
             # 밀린 칸 배열이 존재할때
