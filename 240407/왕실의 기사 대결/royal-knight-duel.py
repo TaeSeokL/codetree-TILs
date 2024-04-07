@@ -48,12 +48,12 @@ def horse_move(num, d):
         player[n] = temp
 
     # 기사들 새로운 위치에 넣어줌.
-    # for n in moving_horses:
-    #     for y, x in player[n]:
-    #         player_board[y][x] = n
-    for n in range(1,N+1):
-        for y,x in player[n]:
+    for n in moving_horses:
+        for y, x in player[n]:
             player_board[y][x] = n
+    # for n in range(1,N+1):
+    #     for y,x in player[n]:
+    #         player_board[y][x] = n
 
     # 기사들 데미지 입혀줌.
     for n in damage_player:
