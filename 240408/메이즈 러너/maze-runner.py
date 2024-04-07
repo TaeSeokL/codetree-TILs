@@ -19,7 +19,6 @@ def move_player():
                     if n_dis < min_dis:
                         min_dis, min_y, min_x = n_dis,ny,nx
 
-
         # 상하좌우 움직여도 거리 안줄어들면 안움직임
         if min_dis == dis :     continue
 
@@ -27,7 +26,7 @@ def move_player():
         ans += 1
 
 def find_square():
-    for l in range(2, n):  # l = 정사각형 크기 / 2부터 n-1까지 가질 수 있음.
+    for l in range(2, n+1):  # l = 정사각형 크기 / 2부터 n까지 가질 수 있음.
         for r in range(n):
             for c in range(n):
                     if (r + l) > n or (c + l) > n:    continue
