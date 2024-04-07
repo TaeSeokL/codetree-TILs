@@ -51,10 +51,7 @@ def horse_move(num, d):
     for n in moving_horses:
         for y, x in player[n]:
             player_board[y][x] = n
-    # for n in range(1,N+1):
-    #     for y,x in player[n]:
-    #         player_board[y][x] = n
-
+            
     # 기사들 데미지 입혀줌.
     for n in damage_player:
         for y, x in player[n]:
@@ -62,7 +59,7 @@ def horse_move(num, d):
                 energy[n] -= 1
 
                 if energy[n] == 0:
-                    for y, x, in player[num]:
+                    for y, x, in player[n]:
                         player_board[y][x] = 0
 
 if __name__=='__main__':
