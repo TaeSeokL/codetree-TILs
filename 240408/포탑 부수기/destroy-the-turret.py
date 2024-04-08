@@ -30,8 +30,8 @@ def find_shortcut(ay,ax,py,px):
     while dq:
         y,x,road = dq.popleft()
 
-        # 우 하 상 좌 순으로 탐색(방향우선순위)
-        for dy, dx in ((0,1),(1,0),(-1,0),(0,-1)):
+        # 우 하 좌 상 순으로 탐색(방향우선순위)
+        for dy, dx in ((0,1),(1,0),(0,-1),(-1,0)):
             # 행과 열 연결 구현
             ny = (y + dy)%n
             nx = (x + dx)%m
