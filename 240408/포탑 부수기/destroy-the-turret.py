@@ -24,7 +24,8 @@ def find_shortcut(ay,ax,py,px):
     dq = deque()                            # 탐색큐 : 현재 탐색 위치와 현재까지 탐색 경로를 저장
     check = [[0]*m for _ in range(n)]       # 방문 배열
 
-    dq.append((ay,ax,[(ay,ax)]))
+    dq.append((ay,ax,[(ay,ax)]))            # 출발점 추가
+    check[ay][ax] = 1                       # 방문체크
 
     while dq:
         y,x,road = dq.popleft()
@@ -41,6 +42,7 @@ def find_shortcut(ay,ax,py,px):
                     return road
                 else:                       # 아닐때 계속 탐색.
                     dq.append((ny,nx,road+[(ny,nx)]))
+                    check[ny][nx] = 1
     # 경로 없으면 그냥 리턴
     return
 
