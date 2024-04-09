@@ -30,21 +30,18 @@ def move_person():
                             if lst:                   # 이동 경로가 있을때 : 즉 한칸 이상 거쳐서 편의점 도착시
                                 person[num] = lst[0]  # 이동한 경로의 젤 처음 이동위치로 사람 위치 갱신(한칸이동)
                                 yy, xx = person[num]
-                            else:                     # 이동 경로가 없을떄 : 즉 한칸 이동으로 바로 편의점 도착시
-                                yy, xx = sy, sx
-
-                            # 만약 이동한 그위치가 편의점일때
-                            if (yy, xx) == (sy, sx):
-                                forbidden_area.append((sy, sx))  # 금지구역처리를 위해 위치 저장
-                                person[num] = False  # 사람 도착 처리
-                            # 그냥 빈칸일때
-                            # else:
                                 # dboard[yy][xx].append(num)  # 디버깅용 위치표시
+                            else:                     # 이동 경로가 없을떄 : 즉 한칸 이동으로 바로 편의점 도착시
+                                forbidden_area.append((sy, sx))  # 금지구역처리를 위해 위치 저장
+                                person[num] = False              # 사람 도착 처리
+
+                            # 사람 이동 끝났으니 이번 사람은 종료
                             dq.clear()
                             break
-                        # 금지구역 아닐때 계속 탐색 진행
-                        dq.append((ny,nx,lst+[(ny,nx)]))
-                        check[ny][nx] = 1
+                        else:
+                            # 편의점 아닐때 계속 탐색 진행
+                            dq.append((ny,nx,lst+[(ny,nx)]))
+                            check[ny][nx] = 1
 
     # [2] 사람이 모두 이동하고 금지구역 처리
     if forbidden_area:
@@ -64,8 +61,14 @@ def add_person(num):
     dq.append((sy, sx,0))
     check[sy][sx] = 1
 
+    # 거리 최소값
+    min_dis = 1000
     while dq:
         y,x,L = dq.popleft()
+
+        # 가지치기
+        if L > min_dis:
+            break
 
         for dy, dx in ((-1, 0), (0, -1), (0, 1), (1, 0)):  # 상좌우하 순 탐색
             ny = y + dy
@@ -75,11 +78,12 @@ def add_person(num):
                 # 만약 다음 위치가 베이스 캠프면 후보 저장
                 if board[ny][nx] == 1:
                     temp.append((ny,nx,L+1))
+                    min_dis = L+1               # 베캠발견시 최단거리기때문에 min_dis갱신
                 else:
                     dq.append((ny,nx,L+1))
                     check[ny][nx] = 1
 
-    # 베이스캠프 : 행작 -> 열작 순서 정렬
+    # 베이스캠프 : 거리작 -> 행작 -> 열작 순서 정렬
     temp.sort(key=lambda x:(x[2],x[0],x[1]))
     ny, nx,_ = temp[0]                  # t번 사람이 이동하는 베이스캠프 위치
     person[num] = (ny, nx)              # 위치갱신
