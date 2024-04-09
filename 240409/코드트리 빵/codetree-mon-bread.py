@@ -53,33 +53,38 @@ def move_person():
             board[y][x] = -1
 
 def add_person(num):
+    temp = []               # 베캠 후보 저장
     sy, sx = store[num]     # t번 사람이 가고 싶은 편의점 위치
 
     # [1] 편의점 -> 베캠 탐색
     dq = deque()
     check = [[0] * n for _ in range(n)]
 
-    # 초기 데이터 넣어주기 및 방문처리 (현재편의점위치))
-    dq.append((sy, sx))
+    # 초기 데이터 넣어주기 및 방문처리 (현재편의점위치)) 거리값추가
+    dq.append((sy, sx,0))
     check[sy][sx] = 1
 
     while dq:
-        y,x = dq.popleft()
+        y,x,L = dq.popleft()
 
         for dy, dx in ((-1, 0), (0, -1), (0, 1), (1, 0)):  # 상좌우하 순 탐색
             ny = y + dy
             nx = x + dx
             # 범위내 / 미방문 / 금지구역 x
             if 0 <= ny < n and 0 <= nx < n and check[ny][nx] == 0 and board[ny][nx] != -1:
-                # 만약 다음 위치가 베이스 캠프면 처리 후 종료
+                # 만약 다음 위치가 베이스 캠프면 후보 저장
                 if board[ny][nx] == 1:
-                    person[num] = (ny,nx)
-                    dboard[ny][nx].append(num)
-                    board[ny][nx] = -1
-                    return
+                    temp.append((ny,nx,L+1))
                 else:
-                    dq.append((ny,nx))
+                    dq.append((ny,nx,L+1))
                     check[ny][nx] = 1
+
+    # 베이스캠프 : 행작 -> 열작 순서 정렬
+    temp.sort(key=lambda x:(x[2],x[0],x[1]))
+    ny, nx,_ = temp[0]                  # t번 사람이 이동하는 베이스캠프 위치
+    person[num] = (ny, nx)              # 위치갱신
+    dboard[ny][nx].append(num)          # 디버깅용 위치 표시
+    board[ny][nx] = -1                  # 금지구역지정
 
 if __name__=='__main__':
     n,m = map(int,input().split())                              # n 맵크기 / m 사람수
