@@ -25,12 +25,12 @@ def move_person():
                     if 0<=ny<n and 0<=nx<n and check[ny][nx] == 0 and board[ny][nx] != -1:
                         # 편의점 도착했을때 -> 사람 원래 위치 지워주고 위치 갱신 후 맵에 표시
                         if (ny, nx) == (sy, sx):
-                            # dboard[py][px].remove(num)  # 디버깅용 위치표시
+                            dboard[py][px].remove(num)  # 디버깅용 위치표시
 
                             if lst:                   # 이동 경로가 있을때 : 즉 한칸 이상 거쳐서 편의점 도착시
                                 person[num] = lst[0]  # 이동한 경로의 젤 처음 이동위치로 사람 위치 갱신(한칸이동)
                                 yy, xx = person[num]
-                                # dboard[yy][xx].append(num)  # 디버깅용 위치표시
+                                dboard[yy][xx].append(num)  # 디버깅용 위치표시
                             else:                     # 이동 경로가 없을떄 : 즉 한칸 이동으로 바로 편의점 도착시
                                 forbidden_area.append((sy, sx))  # 금지구역처리를 위해 위치 저장
                                 person[num] = False              # 사람 도착 처리
@@ -87,13 +87,13 @@ def add_person(num):
     temp.sort(key=lambda x:(x[2],x[0],x[1]))
     ny, nx,_ = temp[0]                  # t번 사람이 이동하는 베이스캠프 위치
     person[num] = (ny, nx)              # 위치갱신
-    # dboard[ny][nx].append(num)          # 디버깅용 위치 표시
+    dboard[ny][nx].append(num)          # 디버깅용 위치 표시
     board[ny][nx] = -1                  # 금지구역지정
 
 if __name__=='__main__':
     n,m = map(int,input().split())                              # n 맵크기 / m 사람수
     board = [list(map(int,input().split())) for _ in range(n)]  # 맵정보 / 0 = 빈칸 1 = 베이스캠프
-    # dboard = [[[] for _ in range(n)] for _ in range(n)]         # 디버깅을 위한 맵
+    dboard = [[[] for _ in range(n)] for _ in range(n)]         # 디버깅을 위한 맵
 
     # 편의점 위치 저장
     store = [0]*(m+1)     # t번 사람이 가고 싶은 편의점 위치 / 인덱스 == t
