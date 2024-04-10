@@ -1,26 +1,26 @@
 def move_player():
     for num in range(len(player)):
         y,x,d = player[num]
-
-        ny = y + dir[d][0]
-        nx = x + dir[d][1]
-
-        # 범위밖일때 -> 방향 정반대
-        if ny < 0 or ny >= n or nx <0 or nx >= n:
-            # 방향 업데이트
-            d = (d+2)%4
-            player[num][2] = d
-            # 다음 위치 다시 구하기
+        dis = abs(sy-y) + abs(sx-x)         # 술래와 거리가 3이하인 애들만 이동
+        if dis <= 3:
             ny = y + dir[d][0]
             nx = x + dir[d][1]
 
-        # 이동 위치가 술래가 아닐때 -> 이동
-        if (ny,nx) != (sy,sx):
-            player[num] = [ny,nx,d]
-            # 디버깅용
-            board[y][x].pop()
-            board[ny][nx].append(1)
+            # 범위밖일때 -> 방향 정반대
+            if ny < 0 or ny >= n or nx <0 or nx >= n:
+                # 방향 업데이트
+                d = (d+2)%4
+                player[num][2] = d
+                # 다음 위치 다시 구하기
+                ny = y + dir[d][0]
+                nx = x + dir[d][1]
 
+            # 이동 위치가 술래가 아닐때 -> 이동
+            if (ny,nx) != (sy,sx):
+                player[num] = [ny,nx,d]
+                # 디버깅용
+                board[y][x].pop()
+                board[ny][nx].append(1)
 
 if __name__=='__main__':
     n,m,h,k = map(int,input().split())                      # n 격자크기 / m 도망자수 / h 나무수 / k 라운드수
