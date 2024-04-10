@@ -38,13 +38,13 @@ def throw_ball(round):
                 return
     elif mock == 2:     # 공진행방향 : 오른쪽 -> 왼쪽
         for x in range(n-1,-1,-1):
-            if board[namugi][x] > 4:
-                hit_ball(namugi,x)
+            if board[n-1-namugi][x] > 4:
+                hit_ball(n-1-namugi,x)
                 return
     else:               # 공진행방향 : 위쪽 -> 아래쪽
         for y in range(0,n):
-            if board[y][namugi] > 4:
-                hit_ball(y,namugi)
+            if board[y][n-1-namugi] > 4:
+                hit_ball(y,n-1-namugi)
                 return
 
 def hit_ball(y,x):
