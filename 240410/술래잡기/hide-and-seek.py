@@ -7,7 +7,7 @@ def move_player():
             nx = x + dir[d][1]
 
             # 범위밖일때 -> 방향 정반대
-            if ny < 0 or ny >= n or nx <0 or nx >= n:
+            if (ny < 0 or ny >= n) or (nx <0 or nx >= n):
                 # 방향 업데이트
                 d = (d+2)%4
                 player[num][2] = d
@@ -56,7 +56,7 @@ if __name__=='__main__':
         sy = sy + dir[sd][0]
         sx = sx + dir[sd][1]
 
-        if (sy,sx) == (0,0):        cnt, max_cnt, flag, val ,sd  = 1, n-1, 1, -1, 2     # (0,0)에 왔을때 안쪽 토네이도 위한 초기화
+        if (sy,sx) == (0,0):        cnt, max_cnt, flag, val ,sd  = 1, n, 1, -1, 2     # (0,0)에 왔을때 안쪽 토네이도 위한 초기화
         if (sy,sx) == (n//2,n//2):  cnt, max_cnt, flag, val ,sd  = 0, 1, 0, 1, 0        # 정가운데 왔을때 바깥쪽 토네이도 위한 초기화
 
         if cnt == max_cnt:
